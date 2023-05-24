@@ -1,0 +1,14 @@
+.treasures {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.treasure {
+    border: 1px solid black;
+    width: 35px;
+    height: 35px;
+}

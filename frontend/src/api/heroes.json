@@ -1,0 +1,67 @@
+[
+    {
+      "name": "Monk",
+      "archetype": "monk",
+      "attributes": {
+        "stealth": 5,
+        "wisdom": 8,
+        "intelligence": 4,
+        "magic": 2,
+        "strength": 6,
+        "charm": 3,
+        "stamina": 9,
+        "luck": 7,
+        "hitPoints": 100
+      },    
+      "description": "Experience and divine intervention are the tools of the monk."
+
+    },
+    {
+      "name": "Rogue",
+      "archetype": "rogue",
+      "attributes": {
+        "stealth": 9,
+        "wisdom": 3,
+        "intelligence": 6,
+        "magic": 4,
+        "strength": 4,
+        "charm": 8,
+        "stamina": 6,
+        "luck": 9,
+        "hitPoints": 100
+      },
+      "description": "If the rogue can't sneak past, they'll charm their way through."
+    },
+    {
+      "name": "Warrior",
+      "archetype": "warrior",
+      "attributes": {
+        "stealth": 3,
+        "wisdom": 5,
+        "intelligence": 2,
+        "magic": 1,
+        "strength": 9,
+        "charm": 4,
+        "stamina": 8,
+        "luck": 5,
+        "hitPoints": 100
+      },
+      "description": "If it needs to be smashed or outlasted, the warrior is up for the job."
+    },
+    {
+      "name": "Wizard",
+      "archetype": "wizard",
+      "attributes": {
+        "stealth": 2,
+        "wisdom": 9,
+        "intelligence": 10,
+        "magic": 9,
+        "strength": 1,
+        "charm": 3,
+        "stamina": 5,
+        "luck": 3,
+        "hitPoints": 100
+      },
+      "description": "Great for solving puzzles or bending reality."
+    }
+]

@@ -1,0 +1,31 @@
+.Card {
+    width: 15em;
+    border: 4px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    transition: box-shadow 0.1s linear;
+    transition: translate 0.1s linear;
+    transition: border-color 0.1s linear;
+    background: white;
+    color: rgb(26, 30, 34);
+    display: flex;
+    flex-direction: column;
+}
+
+.Card .portrait img{
+    border:2px solid black;
+    width: 100%;
+    height: auto;
+};
+
+.Card .card-body {
+    position: relative;
+}
+
+.Card.selected {
+    box-shadow: 5px 5px 5px 1px #311903;
+    border-color: gold;
+    translate: 0px -10px;
+};
+

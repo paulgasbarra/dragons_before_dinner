@@ -1,0 +1,56 @@
+.Heroes .lineup {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 20px;
+        padding: 0 10px;
+}
+
+.Heroes .lineup.gameStarted {
+    justify-content: right;
+}
+
+.health {
+    position: relative;
+    top: 0;
+}
+
+.heart {
+    margin-top: 10px;
+    width: 100px;
+    transform: scale(0.5);
+    font-size: 3em;
+    position: absolute;
+    top: -20%;
+    right: -20%;
+    display:flex;
+    justify-content: center;
+  }
+  
+  .heart::before, .heart::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 52px;
+    height: 80px;
+    border-radius: 50px 50px 0 0;
+    background: red;
+  }
+  
+  .heart::before {
+    left: 50px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+  }
+  
+  .heart::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+  }
+
+  .heart .hitpoints {
+    position: relative;
+    z-index: 100;
+  }
