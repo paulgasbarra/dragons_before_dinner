@@ -1,0 +1,12 @@
+.Challenges .lineup {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.Challenges .lineup.gameStarted {
+    justify-content: left;
+}
+

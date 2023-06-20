@@ -1,0 +1,35 @@
+.Gameboard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    background-color: #e5e5f7;
+    background-size: 50px 20px;
+    background-image: repeating-linear-gradient(to right, #341802, #341802, 3px, #995b21, 3px, #995b21);    
+}
+
+.Gameboard.gameStarted {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Align items to left and right */
+    padding: 0;
+    margin: 0;
+}
+
+.left {
+  order: 1; /* Put the left item first */
+  flex: 1 0 0;
+}
+
+.center {
+    order: 2;
+    text-align: center;
+    width: 20%;
+}
+
+.right {
+  order: 3; /* Put the right item last */
+  flex: 1 0 0;
+}
+
+
