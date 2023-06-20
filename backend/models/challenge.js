@@ -9,7 +9,7 @@ const challengeSchema = new mongoose.Schema({
     options: [{type: Object, required: true}],
 }, {collection: 'challenges'});
 
-module.exports = mongoose.model('hero', challengeSchema);
+module.exports = mongoose.model('challenge', challengeSchema);
 
 /*
 

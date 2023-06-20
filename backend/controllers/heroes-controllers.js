@@ -90,7 +90,6 @@ let MOCK_HEROES = [
 ]
 
 const createHero = async (req, res, next) => {
-    console.log('createHero');
     const createdHero = new Hero({
         name: req.body.name,
         archetype: req.body.archetype,
@@ -139,6 +138,29 @@ const getHeroesByUserId = (req, res, next) => {
     res.json({heroes});
 };
 
+const updateHero = async (req, res, next) => {
+    const heroId = req.params.hid;
+    try {
+        const updatedHero = {...MOCK_HEROES.find((a) => a.id === heroId)};
+        const heroIndex = MOCK_HEROES.findIndex((a) => a.id === heroId); 
+        const { name, archetype, attributes, description, creator, selected, treasures } = req.body;
+        updatedHero.name = name ? name : updatedHero.name;
+        updatedHero.archetype = archetype ? archetype : updatedHero.archetype;
+        updatedHero.attributes = attributes ? attributes : updatedHero.attributes;
+        updatedHero.description = description ? description : updatedHero.description;
+        updatedHero.creator = creator ? creator : updatedHero.creator;
+        updatedHero.selected = selected ? selected : updatedHero.selected;
+        updatedHero.treasures = treasures ? treasures : updatedHero.treasures;
+        MOCK_HEROES[heroIndex] = updatedHero;
+        
+        res.status(200).json({ hero: updatedHero });
+    
+    } catch (err) {
+        const error = new HttpError('Something went wrong, could not update hero.', 500);
+        return next(error);
+    }
+}
+
 const deleteHero = async (req, res, next) => {
     const heroId = req.params.hid;
     if (!MOCK_HEROES.find(h => {return h.id === heroId})) {
@@ -146,37 +168,6 @@ const deleteHero = async (req, res, next) => {
     }
     MOCK_HEROES = MOCK_HEROES.filter(h => {return h.id !== heroId});
     res.status(200).json({message: 'Deleted hero.', MOCK_HEROES});
-}
-
-const updateHero = async (req, res, next) => {
-    const heroId = req.params.hid;
-    let hero;
-    try {
-        hero = MOCK_HEROES.find((a) => a.id === heroId);
-        console.log('hero: ', hero);
-    } catch (err) {
-        const error = new HttpError('Something went wrong, could not update hero.', 500);
-        return next(error);
-    }
-
-    const { name, archetype, attributes, description, creator, selected, treasures } = req.body;
-        hero.name = name ? name : hero.name;
-        hero.archetype = archetype ? archetype : hero.archetype;
-        hero.attributes = attributes ? attributes : hero.attributes;
-        hero.description = description ? description : hero.description;
-        hero.creator = creator ? creator : hero.creator;
-        hero.selected = selected ? selected : hero.selected;
-        hero.treasures = treasures ? treasures : hero.treasures;
-
-    
-    // try {
-    //     await hero.save();
-    // } catch (err) {
-    //     const error = new HttpError('Something went wrong, could not update hero.', 500);
-    //     return next(error);
-    // }
-
-    res.status(200).json({ hero: hero });
 }
 
 

@@ -22,27 +22,3 @@ const heroSchema = new mongoose.Schema({
 }, {collection: 'heroes'});
 
 module.exports = mongoose.model('Hero', heroSchema);
-
-/*
-type Hero {
-    name: string
-    archetype: string
-    image: string
-    attributes: {
-      stealth: number
-      wisdom: number
-      intelligence: number
-      magic: number
-      strength: number
-      charm: number
-      stamina: number
-      luck: number
-      hitPoints: number
-    }
-    description: string
-    selected: boolean
-    treasures: [
-        Treasure[]
-    ]
-  }
-  */

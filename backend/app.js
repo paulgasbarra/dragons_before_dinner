@@ -2,12 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const HttpError = require('./models/http-error');
+const mongoKey = require('./mongoKey');
 
 const heroesRoutes = require('./routes/heroes-routes');
+const usersRoutes = require('./routes/users-routes');
 
-const databaseUrl = 'mongodb+srv://paulgasbarra:databasesarehard@cluster0.ecrx2eu.mongodb.net/cards?retryWrites=true&w=majority'
-
-
+const databaseUrl = mongoKey;
 
 // create express app
 const app = express();
@@ -18,10 +18,13 @@ app.use(bodyParser.json());
 // set routes for heroes
 app.use("/api/heroes", heroesRoutes);
 
+// set routes for users
+app.use("/api/users", usersRoutes);
+
 
 // set routes for errors
 app.use((req, res, next) => {
-    const errror = new HttpError('Could not find this route.', 404);
+    const error = new HttpError('Could not find this route.', 404);
     throw error;
 });
 
