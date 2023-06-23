@@ -39,9 +39,7 @@ mongoose.connect(
    databaseUrl
 ).then(() => {
     console.log('Connected to database!');
-}).catch(() => {
-    console.log('Connection failed!');
+    app.listen(3000);
+}).catch((err) => {
+    console.log('Connection failed!', err);
 });
-
-// add server to listen on port 3000
-app.listen(3000);

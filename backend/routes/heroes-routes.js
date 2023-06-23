@@ -1,6 +1,9 @@
 const express  = require('express');
-const router = express.Router();
+const { query, check } = require('express-validator');
+
 const heroesControllers = require('../controllers/heroes-controllers');
+
+const router = express.Router();
 
 router.get('/', heroesControllers.getHeroes);
 
@@ -8,7 +11,7 @@ router.get('/:hid', heroesControllers.getHeroById);
 
 router.get('/user/:uid', heroesControllers.getHeroesByUserId);
 
-router.post('/', heroesControllers.createHero);
+router.post('/', [check('name').notEmpty(), check('description').notEmpty()], heroesControllers.createHero);
 
 router.patch('/:hid', heroesControllers.updateHero);
 

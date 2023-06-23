@@ -1,6 +1,7 @@
 const HttpError = require('../models/http-error.js');
 const mongoose = require('mongoose');
 const Hero = require('../models/hero.js');
+const { validationResult } = require('express-validator');
 
 let MOCK_HEROES = [
     {
@@ -90,6 +91,18 @@ let MOCK_HEROES = [
 ]
 
 const createHero = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors)
+        let err = new HttpError('Invalid inputs passed, please check your data.', 422);
+        try {
+            throw err;
+        }
+        catch (err) {
+            next(err);
+        }
+        return;
+    }
     const createdHero = new Hero({
         name: req.body.name,
         archetype: req.body.archetype,
