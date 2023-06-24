@@ -1,5 +1,5 @@
 const express  = require('express');
-const { query, check } = require('express-validator');
+const { check } = require('express-validator');
 
 const heroesControllers = require('../controllers/heroes-controllers');
 

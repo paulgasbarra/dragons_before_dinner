@@ -1,4 +1,4 @@
-const HttpError = require('./HttpError');
+import HttpError from '../../models/http-error';
 
 describe('HttpError', () => {
   describe('constructor', () => {

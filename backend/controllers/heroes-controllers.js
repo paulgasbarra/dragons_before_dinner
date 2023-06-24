@@ -1,96 +1,9 @@
 const HttpError = require('../models/http-error.js');
-const mongoose = require('mongoose');
 const Hero = require('../models/hero.js');
 const { validationResult } = require('express-validator');
 
-let MOCK_HEROES = [
-    {
-    "id": "1",
-    "creator": "Paul",
-    "name": "Monk",
-    "archetype": "monk",
-    "image": "urlForMonk",
-    "attributes": {
-        "stealth": 0,
-        "wisdom": 10,
-        "intelligence": 5,
-        "magic": 0,
-        "strength": 5,
-        "charm": 2,
-        "stamina": 5,
-        "luck": 10,
-        "hitPoints": 16
-    },    
-    "description": "Experience and divine intervention are the tools of the venerable monk.",
-    "selected": false,
-    "treasures": []
-    },
-    {
-    "id": "2",
-    "creator": "Paul",
-    "name": "Rogue",
-    "archetype": "rogue",
-    "image": 'urlforRogue',
-    "attributes": {
-        "stealth": 10,
-        "wisdom": 0,
-        "intelligence": 5,
-        "magic": 2,
-        "strength": 2,
-        "charm": 10,
-        "stamina": 0,
-        "luck": 5,
-        "hitPoints": 12
-    },
-    "description": "If the rogue can't sneak past, they'll charm their way through.",
-    "selected": false,
-    "treasures": [],
-    },
-    {
-    "id": "3",
-    "creator": "Paul",
-    "name": "Warrior",
-    "archetype": "warrior",
-    "image": "urlforWarrior",
-    "attributes": {
-        "stealth": 5,
-        "wisdom": 5,
-        "intelligence": 2,
-        "magic": 0,
-        "strength": 10,
-        "charm": 5,
-        "stamina": 10,
-        "luck": 2,
-        "hitPoints": 20
-    },
-    "description": "If it needs to be smashed or outlasted, the warrior is up for the job.",
-    "selected": false,
-    "treasures": [],
-    },
-    {
-    "id": "4",
-    "creator": "Pablo",
-    "name": "Wizard",
-    "archetype": "wizard",
-    "image": "urlforWizard",
-    "attributes": {
-        "stealth": 2,
-        "wisdom": 2,
-        "intelligence": 10,
-        "magic": 10,
-        "strength": 0,
-        "charm": 3,
-        "stamina": 2,
-        "luck": 0,
-        "hitPoints": 8
-    },
-    "description": "Great for solving difficult puzzles or bending reality to your will.",
-    "selected": false,
-    "treasures": []
-    }
-]
-
 const createHero = async (req, res, next) => {
+    // this is missing all the validation and you may want to break out the attributes into their own schema
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         console.log(errors)
@@ -123,32 +36,60 @@ const createHero = async (req, res, next) => {
         selected: req.body.selected || false,
         treasures: req.body.treasures || []
     });
-    MOCK_HEROES.push(createdHero);
-    // const result = await createdHero.save();
+ 
+    try {
+        await createdHero.save();
+    } catch (err) {
+        const error = new HttpError('Creating hero failed, please try again.', 500);
+        return next(error);
+    }
 
     res.status(201).json({hero: createdHero});
 }
 
 const getHeroes = async (req, res, next) => {
-    res.json({heroes: MOCK_HEROES});
+    let heroes;
+    try {
+        heroes = await Hero.find({});
+    } 
+    catch (err) {
+        const error = new HttpError('Fetching heroes failed, please try again later.', 500);
+        return next(error);
+    }
+    res.json({heroes: heroes.map(hero => hero.toObject({getters: true}))});
 }
 
-const getHeroById = (req, res, next) => {
+const getHeroById = async (req, res, next) => {
     const heroId = req.params.hid;
-    const hero = MOCK_HEROES.find(h => {return h.id === heroId});
-    if (!hero) {
-        throw new HttpError('Could not find a hero for the provided id.', 404);
+    let hero;
+    try {
+        hero = await Hero.findById(heroId);
+    } catch (err) {
+        const error = new HttpError('Something went wrong, could not find hero.', 500);
+        return next(error);
     }
-    res.json({hero});
+    if (!hero) {
+        const error = new HttpError('Could not find a hero for the provided id.', 404);
+        return next(error);
+    }
+    res.json( { hero: hero.toObject({getters: true}) });
 };
 
-const getHeroesByUserId = (req, res, next) => {
+const getHeroesByUserId = async (req, res, next) => {
     const userId = req.params.uid;
-    const heroes = MOCK_HEROES.filter(h => {return h.creator === userId});
+    let hero
+    try {
+        heroes = await Hero.find({creator: userId});
+        console.log(heroes);
+    }
+    catch (err) {
+        const error = new HttpError('Fetching heroes failed, please try again later.', 500);
+        return next(error);
+    }
     if (!heroes || heroes.length === 0) {
        return next(new HttpError('Could not find a hero for the provided user id.', 404));
     }
-    res.json({heroes});
+    res.json({heroes: heroes.map(hero => hero.toObject({getters: true}))});
 };
 
 const updateHero = async (req, res, next) => {
@@ -175,6 +116,7 @@ const updateHero = async (req, res, next) => {
 }
 
 const deleteHero = async (req, res, next) => {
+    return next();
     const heroId = req.params.hid;
     if (!MOCK_HEROES.find(h => {return h.id === heroId})) {
         return next(new HttpError('Could not find a hero for the provided id.', 404));
