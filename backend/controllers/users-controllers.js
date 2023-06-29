@@ -3,17 +3,6 @@ const User = require('../models/user.js');
 const { validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 
-let MOCK_USERS = [
-    
-]
-let mockUser = new User({
-    user_name: 'Paul',
-    email: 'paul@email.com',
-    password: 'test',
-})
-
-MOCK_USERS.push(mockUser);
-
 const signup = async (req, res, next) => {
     // validate inputs
     const errors = validationResult(req);
@@ -50,6 +39,7 @@ const signup = async (req, res, next) => {
         user_name,
         email,
         password,
+        heroes: [],
     });
     try {
         await createdUser.save();
@@ -61,12 +51,19 @@ const signup = async (req, res, next) => {
 }
 
 const getUsers = async (req, res, next) => {
-    res.json({users: MOCK_USERS});
+    let users;
+    try {
+        users = await User.find({})
+    } catch (err) {
+        const error = new HttpError("Fetching users failed please try again later.", 500);
+        return next(error);
+    }
+    res.json({users: users.map(user => user.toObject({getters: true}))});
 };
 
 const login = async (req, res, next) => {
     const { email, password } = req.body;
-    const user = MOCK_USERS.find(u => {return u.email === email});
+    const user = await User.findOne({email: email});
     if (!user || user.password !== password) {
         let err = new HttpError('Could not find a user for the provided email or the password is wrong.', 404);
         try {

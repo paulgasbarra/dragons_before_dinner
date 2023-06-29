@@ -1,12 +1,14 @@
 const HttpError = require('../models/http-error.js');
 const Hero = require('../models/hero.js');
+const User = require('../models/user.js');
+const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
+const { v4: uuidv4 } = require('uuid');
 
 const createHero = async (req, res, next) => {
     // this is missing all the validation and you may want to break out the attributes into their own schema
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
         let err = new HttpError('Invalid inputs passed, please check your data.', 422);
         try {
             throw err;
@@ -32,15 +34,34 @@ const createHero = async (req, res, next) => {
         },
         description: req.body.description,
         creator: req.body.creator,
-        id: req.body.id,
+        id: uuidv4(),
         selected: req.body.selected || false,
         treasures: req.body.treasures || []
     });
- 
+
+    let user;
     try {
-        await createdHero.save();
+        user = await User.findById(req.body.creator);
     } catch (err) {
         const error = new HttpError('Creating hero failed, please try again.', 500);
+        return next(error);
+    }
+
+    if (!user) {
+        const error = new HttpError('Could not find user for provided id.', 404);
+        return next(error);
+    }
+ 
+    try {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        await createdHero.save({session: session});
+        user.heroes.push(createdHero);
+        await user.save({session: session});
+        await session.commitTransaction();
+    } catch (err) {
+        console.log(err);
+        const error = new HttpError('Creating hero failed, please try again. Session', 500);
         return next(error);
     }
 
@@ -77,7 +98,7 @@ const getHeroById = async (req, res, next) => {
 
 const getHeroesByUserId = async (req, res, next) => {
     const userId = req.params.uid;
-    let hero
+    let heroes;
     try {
         heroes = await Hero.find({creator: userId});
         console.log(heroes);
@@ -93,38 +114,70 @@ const getHeroesByUserId = async (req, res, next) => {
 };
 
 const updateHero = async (req, res, next) => {
-    const heroId = req.params.hid;
-    try {
-        const updatedHero = {...MOCK_HEROES.find((a) => a.id === heroId)};
-        const heroIndex = MOCK_HEROES.findIndex((a) => a.id === heroId); 
-        const { name, archetype, attributes, description, creator, selected, treasures } = req.body;
-        updatedHero.name = name ? name : updatedHero.name;
-        updatedHero.archetype = archetype ? archetype : updatedHero.archetype;
-        updatedHero.attributes = attributes ? attributes : updatedHero.attributes;
-        updatedHero.description = description ? description : updatedHero.description;
-        updatedHero.creator = creator ? creator : updatedHero.creator;
-        updatedHero.selected = selected ? selected : updatedHero.selected;
-        updatedHero.treasures = treasures ? treasures : updatedHero.treasures;
-        MOCK_HEROES[heroIndex] = updatedHero;
-        
-        res.status(200).json({ hero: updatedHero });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        let err = new HttpError('Invalid inputs passed, please check your data.', 422);
+        try {
+            throw err;
+        }
+        catch (err) {
+            next(err);
+        }
+        return;
+    }
     
+    const heroId = req.params.hid;
+    const { name, archetype, attributes, description } = req.body;
+    let hero;
+    try { 
+        hero = await Hero.findById(heroId);
     } catch (err) {
         const error = new HttpError('Something went wrong, could not update hero.', 500);
         return next(error);
     }
+    
+    hero.name = name || hero.name;
+
+    
+    try {
+        await hero.save();
+    } catch (err) {
+        console.log(err);
+        const error = new HttpError('Something went wrong, could not update hero.', 500);
+        return next(error);
+    }
+
+    res.status(200).json({hero: hero.toObject({getters: true})});
 }
 
 const deleteHero = async (req, res, next) => {
-    return next();
-    const heroId = req.params.hid;
-    if (!MOCK_HEROES.find(h => {return h.id === heroId})) {
-        return next(new HttpError('Could not find a hero for the provided id.', 404));
+   let hero
+   try {
+    hero = await Hero.findById(req.params.hid).populate('creator');
+    } catch (err) {
+        const error = new HttpError('Something went wrong, could not delete hero.', 500);
+        return next(error);
     }
-    MOCK_HEROES = MOCK_HEROES.filter(h => {return h.id !== heroId});
-    res.status(200).json({message: 'Deleted hero.', MOCK_HEROES});
-}
 
+    if (!hero) {
+        const error = new HttpError('Could not find hero for this id.', 404);
+        return next(error);
+    }
+
+    try {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        await hero.deleteOne({session: session});
+        hero.creator.heroes.pull(hero);
+        await hero.creator.save({session: session})
+        await session.commitTransaction();
+    } catch (err) {
+        console.log(err)
+        const error = new HttpError('Something went wrong, could not delete hero.', 500);
+        return next(error);
+    }
+    res.status(200).json({message: 'Deleted hero.'});   
+}
 
 exports.getHeroes = getHeroes;
 exports.getHeroById = getHeroById;

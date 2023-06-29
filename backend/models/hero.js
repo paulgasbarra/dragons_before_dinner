@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const heroSchema = new mongoose.Schema({
     id: {type: String, required: true},
-    creator: {type: String, required: true},
+    creator: {type: mongoose.Types.ObjectId, required: true, ref: "User"},
     name: {type: String, required: true},
     archetype: {type: String, required: true},
     attributes: {

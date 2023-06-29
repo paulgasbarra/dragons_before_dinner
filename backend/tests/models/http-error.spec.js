@@ -1,4 +1,6 @@
-import HttpError from '../../models/http-error';
+const chai = require('chai');
+const expect = chai.expect;
+const HttpError = require('../../models/http-error.js');
 
 describe('HttpError', () => {
   describe('constructor', () => {
@@ -6,13 +8,13 @@ describe('HttpError', () => {
       const message = 'Not Found';
       const errorCode = 404;
       const httpError = new HttpError(message, errorCode);
-      expect(httpError.message).toBe(message);
-      expect(httpError.code).toBe(errorCode);
+      expect(httpError.message).to.equal(message);
+      expect(httpError.code).to.equal(errorCode);
     });
 
     it('should inherit from Error', () => {
       const httpError = new HttpError('Bad Request', 400);
-      expect(httpError instanceof Error).toBe(true);
+      expect(httpError instanceof Error).to.equal(true);
     });
   });
 });
