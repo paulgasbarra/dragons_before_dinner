@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Card = require('./card');
 
 const heroSchema = new mongoose.Schema({
     id: {type: String, required: true},
@@ -19,6 +20,9 @@ const heroSchema = new mongoose.Schema({
     description: {type: String, required: true},
     selected: {type: Boolean, required: true},
     treasures: [{type: Object, required: true}],
-}, {collection: 'heroes'});
+});
 
-module.exports = mongoose.model('Hero', heroSchema);
+
+const Hero = Card.discriminator('Hero', heroSchema);
+
+module.exports = Hero;

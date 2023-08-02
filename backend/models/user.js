@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
     email: {type: String, required: true},
     password: { type: String, required: true},
     //eventually replace with a superclass of card
-    heroes: [{type: mongoose.Types.ObjectId, required: true, ref: "Hero"}],
+    cards: [{type: mongoose.Types.ObjectId, required: true, ref: "Card"}],
+    decks: [{type: mongoose.Types.ObjectId, required: true, ref: "Deck"}], 
 });
 
 module.exports = mongoose.model('User', userSchema);

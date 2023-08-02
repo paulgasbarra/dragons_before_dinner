@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
+const Card = require('./card');
 
 const challengeSchema = new mongoose.Schema({
     name: {type: String, required: true},
     shortName: {type: String, required: true},
     status: {type: String, required: true},
     description: {type: String, required: true},
-    imageUrl: {type: String, required: true},
     options: [{type: Object, required: true}],
 }, {collection: 'challenges'});
 
-module.exports = mongoose.model('challenge', challengeSchema);
+const Challenge = Card.discriminator('Challenge', challengeSchema);
+
+module.exports = Challenge;
 
 /*
 

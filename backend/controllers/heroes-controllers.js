@@ -19,7 +19,10 @@ const createHero = async (req, res, next) => {
         return;
     }
     const createdHero = new Hero({
+        image_url: req.body.image_url,
+        card_type: req.body.card_type,
         name: req.body.name,
+        type: req.body.type,
         archetype: req.body.archetype,
         attributes: {
             stealth: req.body.attributes.stealth,
@@ -56,7 +59,7 @@ const createHero = async (req, res, next) => {
         const session = await mongoose.startSession();
         session.startTransaction();
         await createdHero.save({session: session});
-        user.heroes.push(createdHero);
+        user.cards.push(createdHero);
         await user.save({session: session});
         await session.commitTransaction();
     } catch (err) {

@@ -6,6 +6,7 @@ const mongoKey = require('./mongoKey');
 
 const heroesRoutes = require('./routes/heroes-routes');
 const usersRoutes = require('./routes/users-routes');
+const cardsRoutes = require('./routes/cards-routes');
 
 const databaseUrl = mongoKey;
 
@@ -20,6 +21,9 @@ app.use("/api/heroes", heroesRoutes);
 
 // set routes for users
 app.use("/api/users", usersRoutes);
+
+// set routes for cards
+app.use("/api/cards", cardsRoutes);
 
 
 // set routes for errors
