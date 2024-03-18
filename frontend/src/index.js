@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
   },
-  { path: "/view-cards", element: <ViewCards /> },
+  { path: "/cards", element: <ViewCards /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

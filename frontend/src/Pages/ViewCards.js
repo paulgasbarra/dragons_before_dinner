@@ -8,8 +8,9 @@ const ViewCards = () => {
         const fetchCards = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:5000/api/cards/user/${user_id}`
+                    `http://localhost:3000/api/cards`
                 );
+                console.log(response);
                 const data = await response.json();
                 setLoadedCards(data.cards);
             } catch (err) {}
