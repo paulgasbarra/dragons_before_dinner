@@ -1,7 +1,6 @@
-import './App.css';
-import Gameboard from './Components/Gameboard/Gameboard';
-import Menu from './Components/Menu/Menu';
-import { BrowserRouter } from 'react-router-dom';
+import "./App.css";
+import Gameboard from "./Components/Gameboard/Gameboard";
+import Menu from "./Components/Menu/Menu";
 
 function App() {
   return (

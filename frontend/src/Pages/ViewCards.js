@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const DATABASE_URL = process.env.REACT_APP_DATABASE_URL;
+
 const ViewCards = () => {
   const user_id = 0; // get user id from session
   const [loadedCards, setLoadedCards] = useState([]);
@@ -7,7 +9,7 @@ const ViewCards = () => {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/cards`);
+        const response = await fetch(`http://${DATABASE_URL}/api/cards`);
         console.log(response);
         const data = await response.json();
         setLoadedCards(data.cards);
